@@ -1,0 +1,32 @@
+<script src='http://code.responsivevoice.org/responsivevoice.js'></script>
+<script>
+  $(document).ready(function(){
+    var idleInterval = setInterval(timerIncrement, 5000); // 5 seconds
+
+    function timerIncrement() {
+      $.ajax({
+        url: '/ping',
+        success: function(data) {
+          if (data.success) {
+            $('#breaker').text(data.name);
+            responsiveVoice.speak(data.speech);
+          }
+        }
+      });
+    }
+  });
+</script>
+<h1>Last Build Broken By:</h1>
+<h0 id='breaker'><%= @last %></h0>
+<style>
+  h1{font-size:80px;}
+  h0{
+    display: block;
+    font-size: 200px;
+    -webkit-margin-before: 0.67em;
+    -webkit-margin-after: 0.67em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+  }
+</style>
