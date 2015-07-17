@@ -47,4 +47,5 @@ end
 
 # Use pg as the database for Active Record
 gem 'pg', group: :production
+gem 'unicorn', group: :production
 
