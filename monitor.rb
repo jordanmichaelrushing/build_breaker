@@ -46,8 +46,8 @@ every(15.seconds, 'Checking builds'){
     do_exit = true
   elsif recent_builds[0]['status'] == 'failed'
     command_to_issue = redFlashCommand
-    latest_breaker = `curl -H "Content-Type: application/json" -X GET -d '{"token":"helloGazelleWorld"}' https://buildbreaker.herokuapp.com/breaker`
-    if latest_breaker['success'] && Time.parse(latest_breaker['breaker']['broken_at']) != Time.parse(recent_builds[0]['committer_date'])
+    latest_breaker = JSON.parse(`curl -H "Content-Type: application/json" -X GET -d '{"token":"helloGazelleWorld"}' https://buildbreaker.herokuapp.com/breaker`)
+    if latest_breaker && latest_breaker['success'] && Time.parse(latest_breaker['breaker']['broken_at']) != Time.parse(recent_builds[0]['committer_date'])
       `curl -H "Content-Type: application/json" -X POST -d '{"name":"#{recent_builds[0]['committer_name']}","broken_at":"#{Time.parse(recent_builds[0]['committer_date'])}","token":"helloGazelleWorld"}' https://buildbreaker.herokuapp.com/breaker`
     end
     recent_builds[0]['status']
