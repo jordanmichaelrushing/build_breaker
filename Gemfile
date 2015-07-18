@@ -45,7 +45,8 @@ group :development, :test do
   gem 'mysql2'
 end
 
-# Use pg as the database for Active Record
-gem 'pg', group: :production
-gem 'unicorn', group: :production
-
+group :production do
+  gem 'pg'
+  gem 'unicorn'
+  gem 'clockwork'
+end
