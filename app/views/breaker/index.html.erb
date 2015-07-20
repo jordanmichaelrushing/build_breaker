@@ -4,15 +4,18 @@
     var idleInterval = setInterval(timerIncrement, 5000); // 5 seconds
 
     function timerIncrement() {
-      $.ajax({
-        url: '/ping',
-        success: function(data) {
-          if (data.success) {
-            $('#breaker').text(data.name);
-            responsiveVoice.speak(data.speech);
+      var hour = new Date().getHours();
+      if (hour > 7 && hour < 22) {
+        $.ajax({
+          url: '/ping',
+          success: function(data) {
+            if (data.success) {
+              $('#breaker').text(data.name);
+              responsiveVoice.speak(data.speech);
+            }
           }
-        }
-      });
+        });
+      }
     }
   });
 </script>
