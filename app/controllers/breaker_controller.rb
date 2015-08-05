@@ -1,13 +1,13 @@
 class BreakerController < ApplicationController
-  before_filter :authenticate_user!, except: [:create, :show]
+  before_filter :authenticate_user!, except: [:create, :show, :update]
   def index
-    @last = Breaker.last
+    @last = Breaker.where(fixed_at: nil).last rescue nil
     @last = @last ? @last.name : "No One"
   end
 
   def show
     if params[:token] == 'helloGazelleWorld'
-      breaker = Breaker.last
+      breaker = Breaker.where(fixed_at: nil).last rescue nil
       payload = breaker ? {success: true, breaker: breaker} : {success: false}
       render json: payload
     else
@@ -17,23 +17,45 @@ class BreakerController < ApplicationController
 
   def create
     if params[:token] == 'helloGazelleWorld'
-      Breaker.create(name: params[:name], broken_at: params[:broken_at])
+      Breaker.find_or_create_by(name: params[:name], broken_at: Time.parse(params[:broken_at]).utc)
+    end
+    render json: {}
+  end
+
+  def update
+    if params[:token] == 'helloGazelleWorld'
+      breaker = Breaker.find_by(name: params[:name], broken_at: Time.parse(params[:broken_at]).utc)
+      breaker.update_attributes(fixed_at: Time.parse(params[:fixed_at]).utc) if breaker && breaker.fixed_at.nil?
     end
     render json: {}
   end
 
   def ping
-    broken = Breaker.last
-    master = Master.last
-    if ((broken && master.nil?) || (broken && broken.id != master.id))
+    breaker = Breaker.where(fixed_at: nil).last rescue nil
+    master = Master.find(breaker.id) if breaker rescue nil
+    if (breaker.present? && master.nil?)
       Master.create
       render json: {
                       success: true,
-                      name: broken.name,
-                      speech: "#{broken.name}! You broke the build. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . #{Breaker::BURNS[Random.rand(0..1)]}"
+                      name: breaker.name,
+                      speech: "#{breaker.name}! You broke the build. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . #{Saying::BURNS[Random.rand(0..Saying::BURNS.length - 1)]}"
+                   }
+    elsif (breaker.present? && breaker.id == master.id)
+      render json: {
+                      success: true,
+                      name: breaker.name
                    }
     else
-      render json: {success: false}
+      breaker = Breaker.order('fixed_at desc').first rescue nil
+      if breaker
+        render json: {
+                        success: true,
+                        name: breaker.name,
+                        fixed: true
+                      }
+      else
+        render json: {success: false}
+      end
     end
   end
 

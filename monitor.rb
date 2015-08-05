@@ -10,6 +10,7 @@ circle_url = "https://circleci.com/api/v1/organization/secondrotation?circle-tok
 hue_token = ENV['HUE_TOKEN']
 hue_user = 'obbappuser'
 hue_url="https://www.meethue.com/api/sendmessage?token=#{hue_token}"
+website_url = Rails.env.production? ? "https://buildbreaker.herokuapp.com/breaker" : "http://localhost:3000/breaker"
 greenCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":25500}}}"
 greenFlashCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":25500, \"alert\":\"lselect\"}}}"
 yellowCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":12750}}}"
@@ -36,6 +37,8 @@ every(15.seconds, 'Checking builds'){
     #puts "#{reponame} #{branch} #{status}"
     key = "#{reponame}:#{branch}"
     #puts key
+    `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{committer}","fixed_at":"#{Time.parse(build['stop_time'])}","broken_at":"#{Time.parse(build['committer_date'])}","token":"helloGazelleWorld"}' #{website_url}` if build['status'] == 'fixed'
+    `curl -H "Content-Type: application/json" -X POST -d '{"name":"#{committer}","broken_at":"#{Time.parse(build['committer_date'])}","token":"helloGazelleWorld"}' #{website_url}` if build['status'] == 'failed'
     build_status_map[key] = status
   end
 
@@ -46,11 +49,6 @@ every(15.seconds, 'Checking builds'){
     do_exit = true
   elsif recent_builds[0]['status'] == 'failed'
     command_to_issue = redFlashCommand
-    latest_breaker = JSON.parse(`curl -H "Content-Type: application/json" -X GET -d '{"token":"helloGazelleWorld"}' https://buildbreaker.herokuapp.com/breaker`)
-    if ( !latest_breaker['success'] ) || (latest_breaker && latest_breaker['success'] && Time.parse(latest_breaker['breaker']['broken_at']) != Time.parse(recent_builds[0]['committer_date']))
-      `curl -H "Content-Type: application/json" -X POST -d '{"name":"#{recent_builds[0]['committer_name']}","broken_at":"#{Time.parse(recent_builds[0]['committer_date'])}","token":"helloGazelleWorld"}' https://buildbreaker.herokuapp.com/breaker`
-    end
-    recent_builds[0]['status']
   elsif build_status_map.has_value?('failed')
     command_to_issue = redCommand
   elsif build_status_map.has_value?('running')

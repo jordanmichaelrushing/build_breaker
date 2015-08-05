@@ -10,8 +10,17 @@
           url: '/ping',
           success: function(data) {
             if (data.success) {
-              $('#breaker').text(data.name);
-              responsiveVoice.speak(data.speech);
+              if (data.fixed){
+                $('body').css('background-color','green');
+                $('h1').text("Last Fixed By:");
+                $('#breaker').text(data.name); 
+              } else {
+                $('body').css('background-color','red');
+                $('#breaker').text(data.name);
+                if (data.speech && data.name != "No One") {
+                  responsiveVoice.speak(data.speech);
+                }
+              }
             }
           }
         });
@@ -22,8 +31,10 @@
 <h1>Last Build Broken By:</h1>
 <h0 id='breaker'><%= @last %></h0>
 <style>
-  h1{font-size:80px;}
+  body{background-color: green}
+  h1{font-size:80px;color:white}
   h0{
+    color:white;
     display: block;
     font-size: 200px;
     -webkit-margin-before: 0.67em;
