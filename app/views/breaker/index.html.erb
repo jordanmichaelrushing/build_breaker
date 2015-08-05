@@ -3,6 +3,7 @@
     var idleInterval = setInterval(timerIncrement, 5000); // 5 seconds
 
     function timerIncrement() {
+      var failCount = 0;
       var hour = new Date().getHours();
       if (hour > 7 && hour < 22) {
         $.ajax({
@@ -18,7 +19,13 @@
                 $('h1').text("Last Build Broken By:");
                 $('#breaker').text(data.name);
                 if (data.speech && data.name != "No One") {
-                  responsiveVoice.speak(data.speech);
+                  failCount += 1;
+                  if (failCount == 10){
+                    responsiveVoice.speak(data.speech, 'US ENGLISH FEMALE', {pitch: 2});
+                    failCount = 0;
+                  } else {
+                    responsiveVoice.speak(data.speech, 'US ENGLISH FEMALE');
+                  }
                 }
               }
             }
