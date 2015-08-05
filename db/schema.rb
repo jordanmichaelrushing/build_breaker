@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150729152006) do
+ActiveRecord::Schema.define(version: 20150805203623) do
 
   create_table "breakers", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20150729152006) do
     t.datetime "updated_at",             null: false
     t.datetime "broken_at"
     t.datetime "fixed_at"
+    t.string   "repo_key",   limit: 255
   end
 
   create_table "masters", force: :cascade do |t|

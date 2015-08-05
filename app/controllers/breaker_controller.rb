@@ -17,14 +17,14 @@ class BreakerController < ApplicationController
 
   def create
     if params[:token] == 'helloGazelleWorld'
-      Breaker.find_or_create_by(name: params[:name], broken_at: Time.parse(params[:broken_at]).utc)
+      Breaker.find_or_create_by(name: params[:name], broken_at: Time.parse(params[:broken_at]).utc, repo_key: params[:key])
     end
     render json: {}
   end
 
   def update
     if params[:token] == 'helloGazelleWorld'
-      breaker = Breaker.find_by(name: params[:name], broken_at: Time.parse(params[:broken_at]).utc)
+      breaker = Breaker.find_by(name: params[:name], repo_key: params[:key])
       breaker.update_attributes(fixed_at: Time.parse(params[:fixed_at]).utc) if breaker && breaker.fixed_at.nil?
     end
     render json: {}

@@ -37,8 +37,8 @@ every(15.seconds, 'Checking builds'){
     #puts "#{reponame} #{branch} #{status}"
     key = "#{reponame}:#{branch}"
     #puts key
-    `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{committer}","fixed_at":"#{Time.parse(build['stop_time'])}","broken_at":"#{Time.parse(build['committer_date'])}","token":"helloGazelleWorld"}' #{website_url}` if build['status'] == 'fixed'
-    `curl -H "Content-Type: application/json" -X POST -d '{"name":"#{committer}","broken_at":"#{Time.parse(build['committer_date'])}","token":"helloGazelleWorld"}' #{website_url}` if build['status'] == 'failed'
+    `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{committer}","fixed_at":"#{Time.parse(build['committer_date'])}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if build['status'] == 'fixed'
+    `curl -H "Content-Type: application/json" -X POST -d '{"name":"#{committer}","broken_at":"#{Time.parse(build['committer_date'])}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if build['status'] == 'failed'
     build_status_map[key] = status
   end
 
@@ -59,7 +59,7 @@ every(15.seconds, 'Checking builds'){
 
   puts "Issuing command #{command_to_issue}"
   #res = Net::HTTP.post_form(URI.parse(hue_url), 'clipmessage' => command_to_issue)
-  puts res.body
+  #puts res.body
  
 
   if do_exit

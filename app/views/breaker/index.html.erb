@@ -1,4 +1,3 @@
-<script src='http://code.responsivevoice.org/responsivevoice.js'></script>
 <script>
   $(document).ready(function(){
     var idleInterval = setInterval(timerIncrement, 5000); // 5 seconds
@@ -16,6 +15,7 @@
                 $('#breaker').text(data.name); 
               } else {
                 $('body').css('background-color','red');
+                $('h1').text("Last Build Broken By:");
                 $('#breaker').text(data.name);
                 if (data.speech && data.name != "No One") {
                   responsiveVoice.speak(data.speech);
