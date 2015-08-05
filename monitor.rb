@@ -10,7 +10,7 @@ circle_url = "https://circleci.com/api/v1/organization/secondrotation?circle-tok
 hue_token = ENV['HUE_TOKEN']
 hue_user = 'obbappuser'
 hue_url="https://www.meethue.com/api/sendmessage?token=#{hue_token}"
-website_url = "https://buildbreaker-staging.herokuapp.com/breaker"
+website_url = "https://buildbreaker.herokuapp.com/breaker"
 greenCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":25500}}}"
 greenFlashCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":25500, \"alert\":\"lselect\"}}}"
 yellowCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":12750}}}"
@@ -58,8 +58,8 @@ every(15.seconds, 'Checking builds'){
   end
 
   puts "Issuing command #{command_to_issue}"
-  #res = Net::HTTP.post_form(URI.parse(hue_url), 'clipmessage' => command_to_issue)
-  #puts res.body
+  res = Net::HTTP.post_form(URI.parse(hue_url), 'clipmessage' => command_to_issue)
+  puts res.body
  
 
   if do_exit
