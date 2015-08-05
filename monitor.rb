@@ -58,7 +58,7 @@ every(15.seconds, 'Checking builds'){
   end
 
   puts "Issuing command #{command_to_issue}"
-  res = Net::HTTP.post_form(URI.parse(hue_url), 'clipmessage' => command_to_issue)
+  #res = Net::HTTP.post_form(URI.parse(hue_url), 'clipmessage' => command_to_issue)
   puts res.body
  
 
