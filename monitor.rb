@@ -37,7 +37,12 @@ every(15.seconds, 'Checking builds'){
     #puts "#{reponame} #{branch} #{status}"
     key = "#{reponame}:#{branch}"
     #puts key
-    `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{committer}","fixed_at":"#{Time.parse(build['committer_date'])}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if build['status'] == 'fixed'
+    if build['status'] == 'fixed'
+      puts key
+      puts committer
+      result = `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{committer}","fixed_at":"#{Time.parse(build['committer_date'])}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}`
+      puts result
+    end
     `curl -H "Content-Type: application/json" -X POST -d '{"name":"#{committer}","broken_at":"#{Time.parse(build['committer_date'])}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if build['status'] == 'failed'
     build_status_map[key] = status
   end

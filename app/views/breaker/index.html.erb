@@ -21,10 +21,10 @@
                 if (data.speech && data.name != "No One") {
                   failCount += 1;
                   if (failCount == 10){
-                    responsiveVoice.speak(data.speech, 'US ENGLISH FEMALE', {pitch: 2});
+                    responsiveVoice.speak(data.speech, 'US English Female', {pitch: 2});
                     failCount = 0;
                   } else {
-                    responsiveVoice.speak(data.speech, 'US ENGLISH FEMALE');
+                    responsiveVoice.speak(data.speech, 'US English Female');
                   }
                 }
               }
