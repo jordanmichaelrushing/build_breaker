@@ -18,6 +18,7 @@ blueCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"me
 redCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":0 }}}"
 redFlashCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":0, \"alert\":\"lselect\"}}}"
 offCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":false,\"bri\":255,\"sat\":255,\"hue\":25500}}}"
+beerCommand="{\"clipCommand\":{\"url\":\"/api/obbappuser/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":15000, \"alert\":\"lselect\"}}}"
 
 command = nil
 
@@ -58,6 +59,8 @@ every(15.seconds, 'Checking builds'){
     command_to_issue = redCommand
   elsif build_status_map.has_value?('running')
     command_to_issue = blueCommand
+  elsif Time.now.day == 6 && Time.now.hour == 20 && Time.now.strftime("%M") == "00"
+    command_to_issue = beerCommand
   else
     command_to_issue = greenCommand
   end

@@ -1,10 +1,26 @@
 <script>
   $(document).ready(function(){
     var idleInterval = setInterval(timerIncrement, 5000); // 5 seconds
+    var beerCounter = setInterval(beerIncrement, 5000); // 5 seconds
+
+    function beerIncrement() {
+      var day = new Date().getDay();
+      var hour = new Date().getHours();
+      var minute = new Date().getMinutes();
+      if (day == 4 && hour == 16 && minute == 0){
+        clearInterval(beerCounter);
+        setTimeout(function(){
+          var beerCounter = setInterval(beerIncrement, 5000); // 5 seconds
+        },60001);
+        $('audio')[0].play();
+      }
+    }
+
 
     function timerIncrement() {
       var failCount = 0;
       var hour = new Date().getHours();
+
       if (hour > 7 && hour < 22) {
         $.ajax({
           url: '/ping',
@@ -51,3 +67,7 @@
     font-weight: bold;
   }
 </style>
+<audio>
+  <source src="<%= asset_path('badbeer.mp3') %>" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
