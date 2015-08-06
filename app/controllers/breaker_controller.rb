@@ -24,8 +24,8 @@ class BreakerController < ApplicationController
 
   def update
     if params[:token] == 'helloGazelleWorld'
-      breaker = Breaker.find_by(name: params[:name], repo_key: params[:key])
-      breaker.update_attributes(fixed_at: Time.parse(params[:fixed_at]).utc) if breaker && breaker.fixed_at.nil?
+      breaker = Breaker.where(name: params[:name], repo_key: params[:key])
+      breaker.update_all(fixed_at: Time.parse(params[:fixed_at]).utc) if breaker.present? && breaker.last.fixed_at.nil?
     end
     render json: {}
   end
