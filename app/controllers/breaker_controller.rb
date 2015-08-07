@@ -38,7 +38,7 @@ class BreakerController < ApplicationController
       name = if (breaker.repo_key =~ /zambezi-templates/).present? 
         "Big Commerce"
       elsif (breaker.name =~ /Svet/).present?
-        "Steven"
+        "Steve"
       else
         breaker.name
       end
@@ -52,7 +52,7 @@ class BreakerController < ApplicationController
       name = if (breaker.repo_key =~ /zambezi-templates/).present? 
         "Big Commerce"
       elsif (breaker.name =~ /Svet/).present?
-        "Steven"
+        "Steve"
       else
         breaker.name
       end
@@ -65,7 +65,7 @@ class BreakerController < ApplicationController
       breaker = Breaker.order('fixed_at desc').first rescue nil
       if breaker
         name = if (breaker.fixed_by =~ /Svet/).present?
-          "Steven"
+          "Steve"
         else
           breaker.fixed_by
         end
