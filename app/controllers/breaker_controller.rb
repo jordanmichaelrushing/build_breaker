@@ -24,8 +24,8 @@ class BreakerController < ApplicationController
 
   def update
     if params[:token] == 'helloGazelleWorld'
-      breaker = Breaker.where(name: params[:name], repo_key: params[:key])
-      breaker.update_all(fixed_at: Time.parse(params[:fixed_at]).utc) if breaker.present? && breaker.last.fixed_at.nil?
+      breaker = Breaker.where(repo_key: params[:key])
+      breaker.update_all(fixed_by: params[:name], fixed_at: Time.parse(params[:fixed_at]).utc) if breaker.present? && breaker.last.fixed_at.nil?
     end
     render json: {}
   end
@@ -35,22 +35,24 @@ class BreakerController < ApplicationController
     master = Master.find(breaker.id) if breaker rescue nil
     if (breaker.present? && master.nil?)
       Master.create
+      name = (breaker.repo_key =~ /zambezi-templates/).present? ? "Big Commerce" : breaker.name
       render json: {
                       success: true,
-                      name: breaker.name,
-                      speech: "#{breaker.name}! You broke the build. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . #{Saying::BURNS[Random.rand(0..Saying::BURNS.length - 1)]}"
+                      name: name,
+                      speech: "#{name}! You broke the build. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . #{Saying::BURNS[Random.rand(0..Saying::BURNS.length - 1)]}"
                    }
     elsif (breaker.present? && breaker.id == master.id)
+      name = (breaker.repo_key =~ /zambezi-templates/).present? ? "Big Commerce" : breaker.name
       render json: {
                       success: true,
-                      name: breaker.name
+                      name: name
                    }
     else
       breaker = Breaker.order('fixed_at desc').first rescue nil
       if breaker
         render json: {
                         success: true,
-                        name: breaker.name,
+                        name: breaker.fixed_by,
                         fixed: true
                       }
       else
