@@ -35,14 +35,28 @@ class BreakerController < ApplicationController
     master = Master.find(breaker.id) if breaker rescue nil
     if (breaker.present? && master.nil?)
       Master.create
-      name = (breaker.repo_key =~ /zambezi-templates/).present? ? "Big Commerce" : breaker.name
+      name = if (breaker.repo_key =~ /zambezi-templates/).present? 
+        "Big Commerce"
+      elsif (breaker.name =~ /Svet/).present?
+        "Steven"
+      else
+        breaker.name
+      end
+
       render json: {
                       success: true,
                       name: name,
                       speech: "#{name}! You broke the build. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . #{Saying::BURNS[Random.rand(0..Saying::BURNS.length - 1)]}"
                    }
     elsif (breaker.present? && breaker.id == master.id)
-      name = (breaker.repo_key =~ /zambezi-templates/).present? ? "Big Commerce" : breaker.name
+      name = if (breaker.repo_key =~ /zambezi-templates/).present? 
+        "Big Commerce"
+      elsif (breaker.name =~ /Svet/).present?
+        "Steven"
+      else
+        breaker.name
+      end
+
       render json: {
                       success: true,
                       name: name
@@ -50,9 +64,14 @@ class BreakerController < ApplicationController
     else
       breaker = Breaker.order('fixed_at desc').first rescue nil
       if breaker
+        name = if (breaker.fixed_by =~ /Svet/).present?
+          "Steven"
+        else
+          breaker.fixed_by
+        end
         render json: {
                         success: true,
-                        name: breaker.fixed_by,
+                        name: name,
                         fixed: true
                       }
       else
