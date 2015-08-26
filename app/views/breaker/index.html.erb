@@ -12,6 +12,7 @@
         setTimeout(function(){
           var beerCounter = setInterval(beerIncrement, 5000); // 5 seconds
         },60001);
+        $('audio').prop('volume', 0.3); // Not so loud
         $('audio')[0].play();
       }
     }
