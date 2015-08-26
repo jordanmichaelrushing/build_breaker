@@ -46,7 +46,7 @@ class BreakerController < ApplicationController
       render json: {
                       success: true,
                       name: name,
-                      speech: "#{name}! You broke the build. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . #{Saying::BURNS[Random.rand(0..Saying::BURNS.length - 1)]}"
+                      speech: "#{name}! You broke the build. #{Saying::BURNS[Random.rand(0..Saying::BURNS.length - 1)]}"
                    }
     elsif (breaker.present? && breaker.id == master.id)
       name = if (breaker.repo_key =~ /zambezi-templates/).present? 
@@ -66,6 +66,8 @@ class BreakerController < ApplicationController
       if breaker
         name = if (breaker.fixed_by =~ /Svet/).present?
           "Steve"
+        elsif (breaker.fixed_by =~ /msimmons/).present?
+          "Marky Mark"
         else
           breaker.fixed_by
         end
