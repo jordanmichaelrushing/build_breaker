@@ -39,6 +39,8 @@ class BreakerController < ApplicationController
         "Big Commerce"
       elsif (breaker.name =~ /Svet/).present?
         "Steve"
+      elsif (breaker.fixed_by =~ /msimmons/).present?
+          "Marky Mark"
       else
         breaker.name
       end
