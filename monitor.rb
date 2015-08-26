@@ -53,14 +53,14 @@ every(15.seconds, 'Checking builds'){
   if Time.now.hour >= 2 && Time.now.hour <=10 
     command_to_issue = offCommand
     do_exit = true
+  elsif Time.now.day == 6 && Time.now.hour == 20 && Time.now.strftime("%M") == "00"
+    command_to_issue = beerCommand
   elsif recent_builds[0]['status'] == 'failed'
     command_to_issue = redFlashCommand
   elsif build_status_map.has_value?('failed')
     command_to_issue = redCommand
   elsif build_status_map.has_value?('running')
     command_to_issue = blueCommand
-  elsif Time.now.day == 6 && Time.now.hour == 20 && Time.now.strftime("%M") == "00"
-    command_to_issue = beerCommand
   else
     command_to_issue = greenCommand
   end
