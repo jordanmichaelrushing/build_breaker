@@ -41,6 +41,8 @@ every(15.seconds, 'Checking builds'){
     if build['status'] == 'fixed' || build['status'] == 'success'
       puts key
       puts committer
+      puts build['committer_date']
+      puts build
       result = `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{committer}","fixed_at":"#{Time.parse(build['committer_date'])}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}`
       puts result
     end
