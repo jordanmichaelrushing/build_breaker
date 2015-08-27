@@ -17,7 +17,10 @@ class BreakerController < ApplicationController
 
   def create
     if params[:token] == 'helloGazelleWorld'
-      Breaker.find_or_create_by(name: params[:name], broken_at: Time.parse(params[:broken_at]).utc, repo_key: params[:key])
+      breaker = Breaker.find_or_initialize_by(name: params[:name], broken_at: Time.parse(params[:broken_at]).utc, repo_key: params[:key])
+      breaker.fixed_at = nil
+      breaker.fixed_by = nil
+      breaker.save
     end
     render json: {}
   end
@@ -40,7 +43,7 @@ class BreakerController < ApplicationController
       elsif (breaker.name =~ /Svet/).present?
         "Steve"
       elsif (breaker.fixed_by =~ /msimmons/).present?
-          "Marky Mark"
+        "Marky Mark"
       else
         breaker.name
       end
