@@ -1,5 +1,6 @@
 <script>
   $(document).ready(function(){
+    failCount = 0;
     var idleInterval = setInterval(timerIncrement, 5000); // 5 seconds
     var beerCounter = setInterval(beerIncrement, 5000); // 5 seconds
 
@@ -19,7 +20,6 @@
 
 
     function timerIncrement() {
-      var failCount = 0;
       var hour = new Date().getHours();
 
       if (hour > 7 && hour < 22) {
@@ -38,10 +38,10 @@
                 if (data.speech && data.name != "No One") {
                   failCount += 1;
                   if (failCount == 10){
-                    responsiveVoice.speak(data.speech, 'US English Female', {pitch: 2});
+                    responsiveVoice.speak(data.speech, 'US English Female', {pitch: 2, volume: 0.3});
                     failCount = 0;
                   } else {
-                    responsiveVoice.speak(data.speech, 'US English Female');
+                    responsiveVoice.speak(data.speech, 'US English Female', {volume: 0.3});
                   }
                 }
               }

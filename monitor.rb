@@ -10,7 +10,7 @@ circle_url = "https://circleci.com/api/v1/organization/secondrotation?circle-tok
 hue_token = ENV['HUE_TOKEN']
 hue_user = 'obbappuser'
 hue_url="https://www.meethue.com/api/sendmessage?token=#{hue_token}"
-website_url = "https://buildbreaker-staging.herokuapp.com/breaker"
+website_url = "https://buildbreaker.herokuapp.com/breaker"
 greenCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":25500}}}"
 greenFlashCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":25500, \"alert\":\"lselect\"}}}"
 yellowCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":12750}}}"
@@ -38,7 +38,7 @@ every(15.seconds, 'Checking builds'){
     #puts "#{reponame} #{branch} #{status}"
     key = "#{reponame}:#{branch}"
     #puts key
-    if build['status'] == 'fixed' || build['status'] == 'success'
+    if build['status'] == 'fixed'
       puts key
       puts committer
       result = `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{committer}","fixed_at":"#{Time.parse(build['committer_date'])}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if build['committer_date']
