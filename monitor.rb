@@ -25,6 +25,7 @@ command = nil
 every(15.seconds, 'Checking builds'){
   do_exit = false
   build_status_map = {}
+  build_info_map = {}
   resp = Net::HTTP.get_response(URI.parse(circle_url))
   resp_text = resp.body
   #puts resp_text
@@ -38,14 +39,18 @@ every(15.seconds, 'Checking builds'){
     #puts "#{reponame} #{branch} #{status}"
     key = "#{reponame}:#{branch}"
     #puts key
-    if build['status'] == 'fixed'
-      puts key
-      puts committer
-      result = `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{committer}","fixed_at":"#{Time.parse(build['committer_date'])}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if build['committer_date']
-      puts result
-    end
-    `curl -H "Content-Type: application/json" -X POST -d '{"name":"#{committer}","broken_at":"#{Time.parse(build['committer_date'])}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if build['status'] == 'failed'
     build_status_map[key] = status
+    build_info_map[key] = {committer: committer, committer_date: Time.parse(build['committer_date'])}
+  end
+
+  build_status_map.each do |key,status|
+    if status == 'fixed' || status == 'success'
+      v = build_info_map[key]
+      result = `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{v[:committer]}","fixed_at":"#{v[:committer_date]}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if v[:committer_date]
+    elsif status == 'failed'
+      v = build_info_map[key]
+      `curl -H "Content-Type: application/json" -X POST -d '{"name":"#{v[:committer]}","broken_at":"#{v[:committer_date]}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}`
+    end
   end
 
   puts build_status_map
