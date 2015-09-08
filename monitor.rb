@@ -40,16 +40,16 @@ every(15.seconds, 'Checking builds'){
     key = "#{reponame}:#{branch}"
     #puts key
     build_status_map[key] = status
-    build_info_map[key] = {committer: committer, committer_date: Time.parse(build['committer_date'])}
+    build_info_map[key] = {committer: committer, committer_date: Time.parse(build['committer_date'])} if build['committer_date']
   end
 
   build_status_map.each do |key,status|
     if status == 'fixed' || status == 'success'
       v = build_info_map[key]
-      result = `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{v[:committer]}","fixed_at":"#{v[:committer_date]}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if v[:committer_date]
+      result = `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{v[:committer]}","fixed_at":"#{v[:committer_date]}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if v[:committer_date] & v.present?
     elsif status == 'failed'
       v = build_info_map[key]
-      `curl -H "Content-Type: application/json" -X POST -d '{"name":"#{v[:committer]}","broken_at":"#{v[:committer_date]}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}`
+      `curl -H "Content-Type: application/json" -X POST -d '{"name":"#{v[:committer]}","broken_at":"#{v[:committer_date]}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if v.present?
     end
   end
 
