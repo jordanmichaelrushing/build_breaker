@@ -46,7 +46,7 @@ every(15.seconds, 'Checking builds'){
   build_status_map.each do |key,status|
     if status == 'fixed' || status == 'success' || status == 'no_tests' || status == 'canceled'
       v = build_info_map[key]
-      result = `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{v[:committer]}","fixed_at":"#{v[:committer_date]}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if v[:committer_date] && v.present?
+      result = `curl -H "Content-Type: application/json" -X PUT -d '{"name":"#{v[:committer]}","fixed_at":"#{v[:committer_date]}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if v.present? && v[:committer_date]
     elsif status == 'failed'
       v = build_info_map[key]
       `curl -H "Content-Type: application/json" -X POST -d '{"name":"#{v[:committer]}","broken_at":"#{v[:committer_date]}","key":"#{key}","token":"helloGazelleWorld"}' #{website_url}` if v.present?
