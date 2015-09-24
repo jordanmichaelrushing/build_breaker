@@ -21,6 +21,14 @@ offCommand="{\"clipCommand\":{\"url\":\"/api/#{hue_user}/groups/0/action\",\"met
 beerCommand="{\"clipCommand\":{\"url\":\"/api/obbappuser/groups/0/action\",\"method\":\"PUT\",\"body\":{\"on\":true,\"bri\":255,\"sat\":255,\"hue\":15000, \"alert\":\"lselect\"}}}"
 
 command = nil
+qotd = JSON.parse(`curl http://api.theysaidso.com/qod`)
+
+notifier = Slack::Notifier.new ENV['SLACK_WEBHOOK_URL']
+note = {
+  text: qotd['contents']['quotes'][0]['quote'],
+  color: 'good'
+}
+notifier.ping "Quote of the day, by: #{qotd['contents']['quotes'][0]['author']}", attachments: [note] if notifier
 
 every(15.seconds, 'Checking builds'){
   do_exit = false
