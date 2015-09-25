@@ -1,7 +1,7 @@
 require 'net/http'
 require 'json'
 require 'clockwork'
-
+require 'slack-notifier'
 include Clockwork
 
 puts "STARTING BUILD LIGHT MONITOR"
