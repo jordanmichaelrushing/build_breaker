@@ -37,11 +37,7 @@ class BreakerController < ApplicationController
 
   def ping
     breaker = Breaker.where(fixed_at: nil).last rescue nil
-    Rails.logger.info 'breaker'
-    Rails.logger.info breaker
     master = Master.find(breaker.id) if breaker rescue nil
-    Rails.logger.info 'master'
-    Rails.logger.info master
     if (breaker.present? && master.nil?)
       Master.create
       name = if (breaker.repo_key =~ /zambezi-templates/).present? 

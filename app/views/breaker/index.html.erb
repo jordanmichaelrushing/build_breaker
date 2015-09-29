@@ -53,13 +53,11 @@
     }
   });
   function youBastard(speech){
-    console.log(speech);
-    console.log(speech.indexOf("Bastard") > -1);
     if (speech.indexOf("Bastard") > -1) {
       setTimeout(function(){
         $('#bastard').prop('volume', 0.3); // Not so loud
         $('#bastard')[0].play();
-      },4000);
+      }, 5000);
     }
   }
 </script>
