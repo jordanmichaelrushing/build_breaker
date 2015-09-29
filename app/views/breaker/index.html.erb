@@ -13,8 +13,8 @@
         setTimeout(function(){
           var beerCounter = setInterval(beerIncrement, 5000); // 5 seconds
         },60001);
-        $('audio').prop('volume', 0.3); // Not so loud
-        $('audio')[0].play();
+        $('#beer').prop('volume', 0.3); // Not so loud
+        $('#beer')[0].play();
       }
     }
 
@@ -37,6 +37,7 @@
                 $('#breaker').text(data.name);
                 if (data.speech && data.name != "No One") {
                   failCount += 1;
+                  youBastard(data.speech);
                   if (failCount == 10){
                     responsiveVoice.speak(data.speech, 'US English Female', {pitch: 2, volume: 0.3});
                     failCount = 0;
@@ -51,6 +52,16 @@
       }
     }
   });
+  function youBastard(speech){
+    console.log(speech);
+    console.log(speech.indexOf("Bastard") > -1);
+    if (speech.indexOf("Bastard") > -1) {
+      setTimeout(function(){
+        $('#bastard').prop('volume', 0.3); // Not so loud
+        $('#bastard')[0].play();
+      },4000);
+    }
+  }
 </script>
 <h1>Last Build Broken By:</h1>
 <h0 id='breaker'><%= @last %></h0>
@@ -68,7 +79,11 @@
     font-weight: bold;
   }
 </style>
-<audio>
+<audio id="beer">
   <source src="<%= asset_path('badbeer.mp3') %>" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<audio id="bastard">
+  <source src="<%= asset_path('you_bastard.mp3') %>" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
