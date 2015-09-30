@@ -1,6 +1,7 @@
 <script>
   $(document).ready(function(){
     failCount = 0;
+    flash = '';
     var idleInterval = setInterval(timerIncrement, 5000); // 5 seconds
     var beerCounter = setInterval(beerIncrement, 5000); // 5 seconds
 
@@ -28,6 +29,7 @@
           success: function(data) {
             if (data.success) {
               if (data.fixed){
+                killFlash();
                 $('body').css('background-color','green');
                 $('h1').text("Last Fixed By:");
                 $('#breaker').text(data.name); 
@@ -36,6 +38,7 @@
                 $('h1').text("Last Build Broken By:");
                 $('#breaker').text(data.name);
                 if (data.speech && data.name != "No One") {
+                  flashMessage();
                   failCount += 1;
                   youBastard(data.speech);
                   if (failCount == 10){
@@ -52,6 +55,21 @@
       }
     }
   });
+
+  function flashMessage() {
+    flash = setInterval(function(){
+      $('body').hide();
+      setTimeout(function(){
+        $('body').show();
+      },500);
+    },1000)
+  }
+
+  function killFlash() {
+    clearInterval(flash);
+    $('body').show();
+  }
+
   function youBastard(speech){
     if (speech.indexOf("Bastard") > -1) {
       setTimeout(function(){
