@@ -36,6 +36,7 @@
               } else {
                 $('body').css('background-color','red');
                 $('h1').text("Last Build Broken By:");
+                $('#repoKey').text(data.repo);
                 $('#breaker').text(data.name);
                 if (data.speech && data.name != "No One") {
                   flashMessage();
@@ -81,6 +82,7 @@
 </script>
 <h1>Last Build Broken By:</h1>
 <h0 id='breaker'><%= @last %></h0>
+<h0 id='repoKey'><%= @repo %></h0>
 <style>
   body{background-color: green}
   h1{font-size:80px;color:white}

@@ -1,8 +1,9 @@
 class BreakerController < ApplicationController
   before_filter :authenticate_user!, except: [:create, :show, :update]
   def index
-    @last = Breaker.where(fixed_at: nil).last rescue nil
-    @last = @last ? @last.name : "No One"
+    last = Breaker.where(fixed_at: nil).last rescue nil
+    @last = last ? last.name : "No One"
+    @repo = last ? last.repo_key : "No:One"
   end
 
   def show
@@ -53,7 +54,8 @@ class BreakerController < ApplicationController
       render json: {
                       success: true,
                       name: name,
-                      speech: "#{name}! You broke the build. #{Saying::BURNS[Random.rand(0..Saying::BURNS.length - 1)]}"
+                      speech: "#{name}! You broke the build. #{Saying::BURNS[Random.rand(0..Saying::BURNS.length - 1)]}",
+                      repo: breaker.repo_key
                    }
     elsif (breaker.present? && breaker.id == master.id)
       name = if (breaker.repo_key =~ /zambezi-templates/).present? 
@@ -66,7 +68,8 @@ class BreakerController < ApplicationController
 
       render json: {
                       success: true,
-                      name: name
+                      name: name,
+                      repo: breaker.repo_key
                    }
     else
       breaker = Breaker.order('fixed_at desc').first rescue nil
